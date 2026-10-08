@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}CineAI — Discover what to watch{% endblock %}
+{% block content %}
+{% if query %}
+<section class="search-page shell">
+  <div class="section-head"><div><span class="eyebrow">SEARCH</span><h1>Results for “{{ query }}”</h1><p>{{ movies|length }} movies found.</p></div><a class="ghost-btn" href="{{ url_for('home') }}">Clear search</a></div>
+  <div class="movie-grid">{% for movie in movies %}{% include '_movie_card.html' %}{% else %}<div class="empty wide"><span>⌕</span><h3>No movies found</h3><p>Try a different title, genre or director.</p></div>{% endfor %}</div>
+</section>
+{% else %}
+<section class="hero" style="--hero:url('{{ featured.backdrop if featured else '' }}')">
+  <div class="hero-overlay"></div>
+  <div class="hero-inner shell">
+    <div class="hero-copy">
+      <span class="eyebrow">AI CURATED • FEATURED TONIGHT</span>
+      <h1>{{ featured.title if featured else 'Find your next favorite movie.' }}</h1>
+      <div class="hero-meta"><span>{{ featured.year if featured else '2026' }}</span><i></i><span>{{ featured.genre if featured else 'All genres' }}</span><i></i><strong>★ {{ '4.8' if featured else '4.9' }}/5</strong></div>
+      <p>{{ featured.description if featured else 'Discover films selected around your taste, history and ratings.' }}</p>
+      <div class="hero-actions"><a class="primary-btn" href="{{ url_for('movie_detail', movie_id=featured.id) if featured else url_for('register') }}">View Details <span>→</span></a><a class="secondary-btn" href="{{ url_for('favorites') if current_user else url_for('register') }}">♡ Save to favorites</a></div>
+    </div>
+    {% if featured %}<div class="hero-poster"><img src="{{ featured.poster }}" alt="{{ featured.title }}"><div class="poster-glow"></div></div>{% endif %}
+  </div>
+</section>
+
+<section class="shell section first-section">
+  <div class="section-head"><div><span class="eyebrow">CURATED FOR YOU</span><h2>Editor's choice</h2><p>High-quality picks to start your movie night.</p></div><a href="#trending" class="text-link">Explore all →</a></div>
+  <div class="movie-grid featured-grid">{% for movie in groups.featured %}{% include '_movie_card.html' %}{% endfor %}</div>
+</section>
+
+<section class="shell section" id="trending">
+  <div class="section-head"><div><span class="eyebrow">POPULAR NOW</span><h2>Trending movies</h2><p>Fresh picks people are watching right now.</p></div></div>
+  <div class="movie-grid">{% for movie in groups.trending %}{% include '_movie_card.html' %}{% endfor %}</div>
+</section>
+
+<section class="ai-banner shell">
+  <div><span class="eyebrow">YOUR PERSONAL MOVIE ENGINE</span><h2>Recommendations that learn your taste.</h2><p>CineAI combines ratings, favorites and viewing history with TF-IDF and cosine similarity to find movies that actually fit your interests.</p></div>
+  <a class="primary-btn" href="{{ url_for('dashboard') if current_user else url_for('register') }}">{{ 'Open For You' if current_user else 'Create my profile' }} →</a>
+</section>
+
+<section class="shell section"><div class="section-head"><div><span class="eyebrow">GENRE SPOTLIGHT</span><h2>Sci-Fi & adventure</h2></div></div><div class="movie-grid">{% for movie in groups.sci_fi %}{% include '_movie_card.html' %}{% endfor %}</div></section>
+
+<section class="shell section"><div class="section-head"><div><span class="eyebrow">EVERYTHING YOU LOVE</span><h2>Explore movies</h2></div><a class="text-link" href="?q=Drama">Browse by genre →</a></div><div class="movie-grid">{% for movie in movies %}{% include '_movie_card.html' %}{% endfor %}</div></section>
+{% endif %}
+{% endblock %}

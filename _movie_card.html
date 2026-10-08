@@ -1,0 +1,10 @@
+<article class="movie-card">
+  <a href="{{ url_for('movie_detail', movie_id=movie.id) }}" class="poster-wrap">
+    <img src="{{ movie.poster }}" alt="{{ movie.title }}" loading="lazy">
+    <div class="poster-shade"></div>
+    <span class="score-badge">★ {{ '8.' ~ ((movie.id * 7) % 10) }}</span>
+    {% if movie.year >= 2022 %}<span class="new-badge">NEW</span>{% endif %}
+    <span class="play-btn">▶</span>
+  </a>
+  <div class="movie-card-info"><div><h3>{{ movie.title }}</h3><p>{{ movie.year }} <span>•</span> {{ movie.genre.split(',')[0] }}</p></div><a class="heart" href="{{ url_for('movie_detail', movie_id=movie.id) }}">♡</a></div>
+</article>

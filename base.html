@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#09090b">
+<title>{% block title %}CineAI{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<nav class="navbar" id="navbar">
+  <a class="brand" href="{{ url_for('home') }}"><span class="brand-mark">C</span><span>CINE<span>AI</span></span></a>
+  <div class="navlinks">
+    <a href="{{ url_for('home') }}">Home</a>
+    {% if current_user %}
+      <a href="{{ url_for('dashboard') }}">For You</a>
+      <a href="{{ url_for('favorites') }}">Favorites</a>
+      <a href="{{ url_for('history') }}">History</a>
+      {% if current_user.is_admin %}<a href="{{ url_for('admin_dashboard') }}">Admin</a>{% endif %}
+      <span class="user-pill"><span class="avatar">{{ current_user.name[0]|upper }}</span>{{ current_user.name }}</span>
+      <a class="nav-cta" href="{{ url_for('logout') }}">Logout</a>
+    {% else %}
+      <a href="{{ url_for('login') }}">Login</a>
+      <a class="nav-cta" href="{{ url_for('register') }}">Join CineAI</a>
+    {% endif %}
+  </div>
+</nav>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}<div class="toast-stack">{% for category, message in messages %}<div class="toast {{ category }}">{{ message }}</div>{% endfor %}</div>{% endif %}
+{% endwith %}
+
+<main>{% block content %}{% endblock %}</main>
+
+<footer class="footer">
+  <div><a class="brand" href="{{ url_for('home') }}"><span class="brand-mark">C</span><span>CINE<span>AI</span></span></a><p>AI-powered movie discovery, personalized for you.</p></div>
+  <div class="footer-links"><a href="{{ url_for('home') }}">Home</a>{% if current_user %}<a href="{{ url_for('dashboard') }}">Recommendations</a>{% endif %}<a href="{{ url_for('favorites') if current_user else url_for('login') }}">Favorites</a></div>
+  <small>Final Year Project • Flask + Machine Learning</small>
+</footer>
+<script>
+window.addEventListener('scroll',()=>document.getElementById('navbar')?.classList.toggle('scrolled',window.scrollY>24));
+document.querySelectorAll('img').forEach(img=>img.addEventListener('error',()=>{img.src='https://placehold.co/700x1050/151515/ffffff?text=CINEAI';},{once:true}));
+setTimeout(()=>document.querySelectorAll('.toast').forEach(t=>t.classList.add('hide')),4200);
+</script>
+{% block scripts %}{% endblock %}
+</body>
+</html>
